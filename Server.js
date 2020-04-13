@@ -132,7 +132,7 @@ function addInfo(option) {
       })
       function createDepartment() {
         inquirer
-          .createPromptModule([{
+          .prompt([{
             name: "department",
             type: "input",
             message: "What department would you like to add?"
@@ -146,5 +146,7 @@ function addInfo(option) {
             })
           })
       }
+    case "Role":
+      connection.query("SELECT * From ")
   }
 }
