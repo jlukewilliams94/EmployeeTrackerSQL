@@ -123,11 +123,12 @@ function addInfo(option) {
             function (err){
               if (err) throw err
               console.log("Employee as been added to system")
-              runSearch()
+              keepGoing()
             }
           })
         
       })
+      break;
     case "Department":
       connection.query("SELECT * FROM department", function(err, res){
         if (err) throw err
@@ -148,10 +149,11 @@ function addInfo(option) {
             {department_name: a.department}, function(err){
               if (err) throw err
               console.log("Department as been added to system")
-              runSearch()
+              keepGoing()
             })
           })
       }
+      break;
     case "Role":
       connection.query("SELECT * FROM role", function(err, res){
         if (err) throw err
@@ -187,7 +189,7 @@ function addInfo(option) {
           ,function (err){
             console.log("Department as been added to system")
             console.log("--------------------------------------------------")
-            runSearch()
+            keepGoing()
           })
         })
       }
@@ -202,24 +204,27 @@ function viewInfo(option) {
         console.log("--------------------------------------------------")
         console.table(res)
         console.log("--------------------------------------------------")
-        runSearch()
+        keepGoing()
       })
+      break;
     case "Role":
       connection.query("SELECT * FROM role", function(err, res){
         if (err) throw err;
         console.log("--------------------------------------------------")
         console.table(res)
         console.log("--------------------------------------------------")
-        runSearch()
+        keepGoing()
       })
+      break;
     case "Department":
       connection.query("SELECT * FROM department", function(err, res){
         if (err) throw err;
         console.log("--------------------------------------------------")
         console.table(res)
         console.log("--------------------------------------------------")
-        runSearch()
+        keepGoing()
       })
+      break;
   }
 }
 
@@ -245,12 +250,15 @@ function updateInfo(option) {
             changeManager()
           }
     });
-    /*case "Department":
+    break;
+    case "Department":
       console.log("Apologize, we cannot update the Department Table at this time")
-      runSearch()
+      keepGoing()
+    break;
     case "Role":
       console.log("Apologize, we cannot update the Role Table at this time")
-      runSearch()*/
+      keepGoing()
+    break;  
   }
 }
 
@@ -295,7 +303,7 @@ function changeRole (){
         function(err){
           if (err) throw err;
           console.log("--------------------------------------------------")
-          runSearch()
+          keepGoing()
         })
       })
     })
@@ -344,7 +352,7 @@ function changeManager(){
           function (err){
             if (err) throw err;
             console.log("--------------------------------------------------")
-            runSearch()
+            keepGoing()
           })
         })
     })
@@ -353,3 +361,24 @@ function changeManager(){
 
 
 
+function keepGoing() {
+  inquirer.prompt({
+          name: "action",
+          type: "list",
+          message: "Would you like to continue to exit?",
+          choices: ["CONTINUE", "EXIT"]
+      })
+      .then(function (res) {
+          switch (res.action) {
+              case "EXIT":
+                  connection.end();
+                  break;
+              case "CONTINUE":
+                  runSearch();
+                  break;
+          }
+      })
+      .catch(function (err) {
+          console.log(err);
+      })
+}
