@@ -20,7 +20,9 @@ connection.connect(function(err) {
       return;
     }
     console.log("connected as id " + connection.threadId);
+    console.log("--------------------------------------------------")
     connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, department.department_name,  employee.manager_id FROM employee AS employee JOIN role AS role ON employee.role_id = role.id JOIN department AS department ON role.department_id = department.id", function(err, res){
+      console.log("WELCOME TO THE EMPLOYEE MANAGEMENT SYSTEM")
       console.log("--------------------------------------------------")
       console.table(res)
       console.log("--------------------------------------------------")
@@ -224,61 +226,130 @@ function viewInfo(option) {
 function updateInfo(option) {
   switch(option){
     case "Employee":
-      connection.query("SELECT * FROM role", function(err, res){
-        if (err) throw err;
-        const roles = res.map(object => {
-          return {
-              name: object.title,
-              value: object.id
+      inquirer
+        .prompt([
+          {
+            name: "employeeOption",
+            type: "list",
+            message: "What would you like to update in the Employee table ?",
+            choices:[
+              "Change Employees Role",
+              "Change Employees Manager"
+            ]
           }
-        })
-        connection.query("SELECT * FROM employee", function(error, result){
-          if (error) throw error;
-          const employees = result.map(object => {
-            return {
-              name : `${object.first_name} ${object.last_name}`,
-              value: object.id
-            }
-          })
-          inquirer
-            .prompt([
-            {
-              name: "employee", 
-              type: "list", 
-              message: "Which employee's position would you like to update ?", 
-              choices: employees
-            },
-            {
-              name: "newRole",
-              type: "list",
-              message: "What would you like the employees new role to be ?",
-              choices: roles
-            }
-          ])
-          .then(function (a){
-            connection.query("UPDATE employee SET ? WHERE ?", 
-            [{role_id: a.newRole
-            },
-            {id: a.employee
-            }],
-            function(err){
-              if (err) throw err;
-              console.log("--------------------------------------------------")
-              runSearch()
-            })
-          })
-        })
-      })
-    case "Department":
+        ])
+        .then(function(answer){
+          if (answer.employeeOption === "Change Employees Role"){
+            changeRole()
+          } else {
+            changeManager()
+          }
+    });
+    /*case "Department":
       console.log("Apologize, we cannot update the Department Table at this time")
+      runSearch()
     case "Role":
       console.log("Apologize, we cannot update the Role Table at this time")
+      runSearch()*/
   }
 }
 
+function changeRole (){
+  connection.query("SELECT * FROM role", function(err, res){
+    if (err) throw err;
+    const roles = res.map(object => {
+    return {
+        name: object.title,
+        value: object.id
+    }
+    })
+    connection.query("SELECT * FROM employee", function(error, result){
+      if (error) throw error;
+      const employees = result.map(object => {
+        return {
+          name : `${object.first_name} ${object.last_name}`,
+          value: object.id
+        }
+      })
+      inquirer
+        .prompt([
+        {
+          name: "employee", 
+          type: "list", 
+          message: "Which employee's position would you like to update ?", 
+          choices: employees
+        },
+        {
+          name: "newRole",
+          type: "list",
+          message: "What would you like the employees new role to be ?",
+          choices: roles
+        }
+      ])
+      .then(function (a){
+        connection.query("UPDATE employee SET ? WHERE ?", 
+        [{role_id: a.newRole
+        },
+        {id: a.employee
+        }],
+        function(err){
+          if (err) throw err;
+          console.log("--------------------------------------------------")
+          runSearch()
+        })
+      })
+    })
+  })
+}
 
-
-
+function changeManager(){
+  connection.query("SELECT * FROM employee", function(err, res){
+    if (err) throw err;
+    const employees = result.map(object => {
+      return {
+        name : `${object.first_name} ${object.last_name}`,
+        value: object.id
+      }
+    })
+    connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function(error, result){
+      const managers = result.map(object=> {
+        return {
+          name : `${object.first_name} ${object.last_name}`,
+          value: object.id
+        }
+      })
+      inquirer
+        .prompt([
+          {
+            name: "employee",
+            type: "list", 
+            message: "For which Employee would you like update their Manager ?",
+            choices: employees
+          },
+          {
+            name: "newManager",
+            type: "list", 
+            message: "Which Manager would you like to have as the Employees new Manager ?", 
+            choices: managers
+          }
+        ])
+        .then(function (a){
+          connection.query("UPDATE employee SET ? WHERE ?",
+          [{
+            manager_id: a.newManager
+          },
+          {
+            id: a.employee
+          }],
+          function (err){
+            if (err) throw err;
+            console.log("--------------------------------------------------")
+            runSearch()
+          })
+        })
+    })
+  })
+}
 
 
 
