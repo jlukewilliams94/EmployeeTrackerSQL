@@ -18,13 +18,17 @@ connection.connect(function(err) {
       return;
     }
     console.log("connected as id " + connection.threadId);
-    runSearch()
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, department.department_name,  employee.manager_id FROM employee AS employee JOIN role AS role ON employee.role_id = role.id JOIN department AS department ON role.department_id = department.id", function(err, res){
+      console.table(res)
+      console.log("--------------------------------------------------")
+      runSearch()
+    })
 });
 
 
 function runSearch() {
   inquirer
-    .prompt({
+    .prompt([{
       name: "action",
       type: "list",
       message: "What would you like to do ?",
@@ -38,13 +42,13 @@ function runSearch() {
     {
       name: "option",
       type: "list",
-      message: "Select and option from the below table",
+      message: "Select and option from the below table ?",
       choices: [
         "Department",
         "Employee",
         "Role"
       ]
-    })
+    }])
     .then(function(answer) {
       switch (answer.action) {
       case "Add":
@@ -69,9 +73,50 @@ function runSearch() {
     })
 };
 
-function addInfo(option) {
+
+ function addInfo(option) {
   switch(option) {
     case "Employee":
-
+      connection.query("SELECT * FROM role", function(err, res){
+        const roles = res.map(object => {
+          return {
+              name: object.role_title,
+              value: object.r_id
+          }
+        })
+        connection.query("SELECT * FROM employee", function(err, result){
+          if (err) throw err;
+          const employees = res.map(object => {
+            return {
+                name: `${object.first_name} ${object.last_name}`,
+                value: object.e_id
+            }
+        })
+          inquirer
+            .prompt([{
+              name: "first_name",
+              type: "input",
+              message: "What is the employee's first name?",
+            },
+            {
+              name: "last_name",
+              type: "input",
+              message: "What is the employee's last name?",
+            },
+            {
+              name: "role",
+              type: "list",
+              message: "What is the employee's position?",
+              choices: roles
+            },
+            {
+              name: "manager",
+              type: "list",
+              message: "Who is the employee's manager?",
+              choices: employees
+            },
+            ])
+        }) 
+      })
   }
 }

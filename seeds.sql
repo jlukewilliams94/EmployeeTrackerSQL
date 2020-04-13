@@ -16,7 +16,7 @@ CREATE TABLE department (
 CREATE TABLE role (
     id INT NOT NULL AUTO_INCREMENT, 
     title VARCHAR (30) NOT NULL,
-    salary DECIMAL (10,4) NOT NULL, 
+    salary DECIMAL (10,2) NOT NULL, 
     department_id INT NOT NULL,
     PRIMARY KEY (id)
 )
@@ -31,11 +31,58 @@ CREATE TABLE employee (
     PRIMARY KEY (id)
 )
 
-INSERT INTO department (id, department_name)
-VALUES ();
+INSERT INTO department (department_name)
+VALUES ("Sales");
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES ();
+INSERT INTO department (department_name)
+VALUES ("Engineering");
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES ();
+INSERT INTO department (department_name)
+VALUES ("Finance");
+
+INSERT INTO department (department_name)
+VALUES ("Legal");
+
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Customer Service Representitve", 40000 , 1);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Account Sales Lead", 80000 , 1);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Senior Application Engineer", 100000, 2);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Junior Application Engineer", 75000, 2);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Accountant", 65000, 3);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("Book Keeper", 35000, 3);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("House Council", 120000, 4);
+
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Chris", "Glennon", 1, 2);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Lucy", "Duet", 2, NULL);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Luke", "Williams", 3, NULL);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Nicole", "Gleason", 4, 3);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Bailey", "Hoch", 5, NULL);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Roelvis", "Vargas", 6, 5);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Keith", "George", 7, NULL);
