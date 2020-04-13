@@ -74,23 +74,15 @@ function runSearch() {
 };
 
 
- function addInfo(option) {
+function addInfo(option) {
   switch(option) {
     case "Employee":
       connection.query("SELECT * FROM role", function(err, res){
         const roles = res.map(object => {
           return {
-              name: object.role_title,
-              value: object.r_id
+              name: object.title,
+              value: object.id
           }
-        })
-        connection.query("SELECT * FROM employee", function(err, result){
-          if (err) throw err;
-          const employees = res.map(object => {
-            return {
-                name: `${object.first_name} ${object.last_name}`,
-                value: object.e_id
-            }
         })
           inquirer
             .prompt([{
@@ -106,17 +98,53 @@ function runSearch() {
             {
               name: "role",
               type: "list",
-              message: "What is the employee's position?",
+              message: "What is the employee's title",
               choices: roles
             },
             {
               name: "manager",
-              type: "list",
+              type: "input",
               message: "Who is the employee's manager?",
-              choices: employees
+              default: "null"
             },
-            ])
-        }) 
+          ])
+          .then(function(res){
+            connection.query("INSERT INTO employee SET ?", {
+              first_name: res.first_name,
+              last_name: res.last_name,
+              title: res.title, 
+              manager_id: res.manager
+            }), 
+            function (err){
+              if (err) throw err
+              console.log("Employee as been added to system")
+              runSearch()
+            }
+          })
+        
       })
+    case "Department":
+      connection.query("SELECT * FROM department", function(err, res){
+        if (err) throw err
+        console.table(res)
+        console.log("--------------------------------------------------")
+        createDepartment()
+      })
+      function createDepartment() {
+        inquirer
+          .createPromptModule([{
+            name: "department",
+            type: "input",
+            message: "What department would you like to add?"
+          }])
+          .then(function(a){
+            connection.query("INSERT INTO department SET ?",
+            {department_name: a.department}, function(err){
+              if (err) throw err
+              console.log("Department as been added to system")
+              runSearch()
+            })
+          })
+      }
   }
 }
