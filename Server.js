@@ -30,7 +30,7 @@ connection.connect(function(err) {
     })
 });
 
-
+// Initial inquirer prompt to find out what users whether users want to add, view, update or delete table informaiton
 function runSearch() {
   inquirer
     .prompt([{
@@ -54,6 +54,7 @@ function runSearch() {
         "Role"
       ]
     }])
+    //Depending on the response to the prompt various functions will be called
     .then(function(answer) {
       switch (answer.action) {
       case "Add":
@@ -78,7 +79,7 @@ function runSearch() {
     })
 };
 
-
+// addInfo function allows user to add an employee, department or role to the corresponding table
 function addInfo(option) {
   switch(option) {
     case "Employee":
@@ -196,16 +197,35 @@ function addInfo(option) {
   }
 }
 
+//viewInfo allows users to view each table
 function viewInfo(option) {
   switch(option) {
     case "Employee":
-      connection.query("SELECT * from employee", function(err, res){
-        if (err) throw err;
-        console.log("--------------------------------------------------")
-        console.table(res)
-        console.log("--------------------------------------------------")
-        keepGoing()
-      })
+      inquirer
+        .prompt([
+          {
+            name: "option",
+            type: "list",
+            message: "What would you like to view in Employee Table ?",
+            choices: [
+              "View the Employee Table", 
+              "View the Employees by Manager"
+            ]
+          }
+        ])
+        .then(function (a){
+          if (a.option === "View the Employee Table"){
+            connection.query("SELECT * from employee", function(err, res){
+              if (err) throw err;
+              console.log("--------------------------------------------------")
+              console.table(res)
+              console.log("--------------------------------------------------")
+              keepGoing()
+            })
+          } else {
+            viewByManager()
+          }
+        })
       break;
     case "Role":
       connection.query("SELECT * FROM role", function(err, res){
@@ -227,6 +247,37 @@ function viewInfo(option) {
       break;
   }
 }
+
+function viewByManager(){
+  connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function(error, result){
+    if (err) throw err
+    const managers = result.map(object=> {
+      return {
+        name : `${object.first_name} ${object.last_name}`,
+        value: object.id
+      }
+    })
+    inquirer
+      .prompt([
+        {
+          name: "managerChoice",
+          type: "list",
+          message: "Which Managers Employees do you want to view ?",
+          choices: managers
+        }
+      ])
+      .then(function (a){
+        connection.query("SELECT * FROM employee WHERE manager_id = ?", [a.managerChoice], function(error,res){
+          if (error) throw error;
+          console.log("--------------------------------------------------")
+          console.table(res)
+          console.log("--------------------------------------------------")
+          keepGoing()
+        })
+      })
+  })  
+}
+
 
 function updateInfo(option) {
   switch(option){
