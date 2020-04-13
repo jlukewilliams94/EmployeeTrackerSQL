@@ -1,5 +1,6 @@
-const mySQL = require("mysql")
+const mysql = require("mysql")
 const inquirer = require("inquirer")
+const cTable = require("console.table")
 
 
 let connection = mysql.createConnection({
@@ -46,21 +47,31 @@ function runSearch() {
     })
     .then(function(answer) {
       switch (answer.action) {
-      case "":
-        
+      case "Add":
+        addInfo(answer.option)
         break;
 
-      case "":
+      case "View":
+        viewInfo(answer.option)
         break;
 
-      case "":
+      case "Update":
+        updateInfo(answer.option)
         break;
 
-      case "":
-        break;
-
-      case "":
+      case "Delete":
+        deleteInfo(answer.option)
         break;
       }
-    });
+    })
+    .catch(function(err){
+      console.log(err)
+    })
+};
+
+function addInfo(option) {
+  switch(option) {
+    case "Employee":
+
+  }
 }
