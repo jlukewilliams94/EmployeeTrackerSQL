@@ -201,6 +201,7 @@ function addInfo(option) {
 function viewInfo(option) {
   switch(option) {
     case "Employee":
+      //for employee users will be prompted as to whether they wwant to view by manager or jus view the table
       inquirer
         .prompt([
           {
@@ -248,9 +249,10 @@ function viewInfo(option) {
   }
 }
 
+//view by manager prompt is called and returns employees whos manager is employee
 function viewByManager(){
   connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function(error, result){
-    if (err) throw err
+    if (error) throw error
     const managers = result.map(object=> {
       return {
         name : `${object.first_name} ${object.last_name}`,
@@ -278,7 +280,7 @@ function viewByManager(){
   })  
 }
 
-
+//updateInfo to allow the user to update employee table. Department and Role tables do not have this capability at this time. 
 function updateInfo(option) {
   switch(option){
     case "Employee":
@@ -361,16 +363,18 @@ function changeRole (){
   })
 }
 
+// Function to change the manager of an employee
 function changeManager(){
   connection.query("SELECT * FROM employee", function(err, res){
     if (err) throw err;
-    const employees = result.map(object => {
+    const employees = res.map(object => {
       return {
         name : `${object.first_name} ${object.last_name}`,
         value: object.id
       }
     })
     connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function(error, result){
+      if (error) throw error;
       const managers = result.map(object=> {
         return {
           name : `${object.first_name} ${object.last_name}`,
@@ -412,6 +416,9 @@ function changeManager(){
 
 
 
+
+
+// Function to prompt the user whethere they want to end node session with "Exit" or "Continue" with mode session.
 function keepGoing() {
   inquirer.prompt({
           name: "action",
