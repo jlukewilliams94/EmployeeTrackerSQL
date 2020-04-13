@@ -135,7 +135,7 @@ function addInfo(option) {
           .prompt([{
             name: "department",
             type: "input",
-            message: "What department would you like to add?"
+            message: "What department would you like to add to the system ?"
           }])
           .then(function(a){
             connection.query("INSERT INTO department SET ?",
@@ -147,6 +147,43 @@ function addInfo(option) {
           })
       }
     case "Role":
-      connection.query("SELECT * From ")
+      connection.query("SELECT * FROM role", function(err, res){
+        if (err) throw err
+        console.table(res)
+        console.log("--------------------------------------------------")
+        createRole()
+      })
+      function createRole() {
+        inquirer
+          .prompt([{
+            name: "role",
+            type: "input",
+            message: "What role would you like to add to the system ?"
+          },
+          {
+            name: "salary", 
+            type: "number",
+            message: "What is the new positions salary?"
+          },
+          {
+            name: "department_id",
+            type: "number",
+            message: "What department id is new position associated with?"
+          }
+        ])
+        .then(function (b){
+          connection.query("INSERT INTO role SET ?", 
+          { title: a.department,
+            salary: a.salary, 
+            department_id: b.department_id
+          }
+          ,function (err){
+            console.log("Department as been added to system")
+            runSearch()
+          })
+        })
+      }
   }
 }
+
+
