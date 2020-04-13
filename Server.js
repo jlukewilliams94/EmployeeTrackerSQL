@@ -2,6 +2,8 @@ const mysql = require("mysql")
 const inquirer = require("inquirer")
 const cTable = require("console.table")
 
+require('events').EventEmitter.prototype._maxListeners = 100;
+
 
 let connection = mysql.createConnection({
     host: "localhost",
@@ -19,6 +21,7 @@ connection.connect(function(err) {
     }
     console.log("connected as id " + connection.threadId);
     connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, department.department_name,  employee.manager_id FROM employee AS employee JOIN role AS role ON employee.role_id = role.id JOIN department AS department ON role.department_id = department.id", function(err, res){
+      console.log("--------------------------------------------------")
       console.table(res)
       console.log("--------------------------------------------------")
       runSearch()
@@ -126,6 +129,7 @@ function addInfo(option) {
     case "Department":
       connection.query("SELECT * FROM department", function(err, res){
         if (err) throw err
+        console.log("--------------------------------------------------")
         console.table(res)
         console.log("--------------------------------------------------")
         createDepartment()
@@ -149,6 +153,7 @@ function addInfo(option) {
     case "Role":
       connection.query("SELECT * FROM role", function(err, res){
         if (err) throw err
+        console.log("--------------------------------------------------")
         console.table(res)
         console.log("--------------------------------------------------")
         createRole()
@@ -179,11 +184,101 @@ function addInfo(option) {
           }
           ,function (err){
             console.log("Department as been added to system")
+            console.log("--------------------------------------------------")
             runSearch()
           })
         })
       }
   }
 }
+
+function viewInfo(option) {
+  switch(option) {
+    case "Employee":
+      connection.query("SELECT * from employee", function(err, res){
+        if (err) throw err;
+        console.log("--------------------------------------------------")
+        console.table(res)
+        console.log("--------------------------------------------------")
+        runSearch()
+      })
+    case "Role":
+      connection.query("SELECT * FROM role", function(err, res){
+        if (err) throw err;
+        console.log("--------------------------------------------------")
+        console.table(res)
+        console.log("--------------------------------------------------")
+        runSearch()
+      })
+    case "Department":
+      connection.query("SELECT * FROM department", function(err, res){
+        if (err) throw err;
+        console.log("--------------------------------------------------")
+        console.table(res)
+        console.log("--------------------------------------------------")
+        runSearch()
+      })
+  }
+}
+
+function updateInfo(option) {
+  switch(option){
+    case "Employee":
+      connection.query("SELECT * FROM role", function(err, res){
+        if (err) throw err;
+        const roles = res.map(object => {
+          return {
+              name: object.title,
+              value: object.id
+          }
+        })
+        connection.query("SELECT * FROM employee", function(error, result){
+          if (error) throw error;
+          const employees = result.map(object => {
+            return {
+              name : `${object.first_name} ${object.last_name}`,
+              value: object.id
+            }
+          })
+          inquirer
+            .prompt([
+            {
+              name: "employee", 
+              type: "list", 
+              message: "Which employee's position would you like to update ?", 
+              choices: employees
+            },
+            {
+              name: "newRole",
+              type: "list",
+              message: "What would you like the employees new role to be ?",
+              choices: roles
+            }
+          ])
+          .then(function (a){
+            connection.query("UPDATE employee SET ? WHERE ?", 
+            [{role_id: a.newRole
+            },
+            {id: a.employee
+            }],
+            function(err){
+              if (err) throw err;
+              console.log("--------------------------------------------------")
+              runSearch()
+            })
+          })
+        })
+      })
+    case "Department":
+      console.log("Apologize, we cannot update the Department Table at this time")
+    case "Role":
+      console.log("Apologize, we cannot update the Role Table at this time")
+  }
+}
+
+
+
+
+
 
 
