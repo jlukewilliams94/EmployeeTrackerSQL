@@ -165,7 +165,7 @@ function addInfo(option) {
       }
       break;
     case "Role":
-      connection.query("SELECT * FROM role", function(err, res){
+      connection.query("SELECT DISTINCT role.title, department.id, department.department_name FROM department AS department LEFT JOIN role AS role ON department.id = role.department_id ", function(err, res){
         if (err) throw err
         console.log("--------------------------------------------------")
         console.table(res)
@@ -192,12 +192,12 @@ function addInfo(option) {
         ])
         .then(function (b){
           connection.query("INSERT INTO role SET ?", 
-          { title: a.department,
-            salary: a.salary, 
+          { title: b.department,
+            salary: b.salary, 
             department_id: b.department_id
           }
           ,function (err){
-            console.log("Department as been added to system")
+            console.log(`${b.role} has been added to the system`)
             console.log("--------------------------------------------------")
             keepGoing()
           })
