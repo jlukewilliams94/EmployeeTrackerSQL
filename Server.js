@@ -294,7 +294,7 @@ function viewByManager(){
 
 //Function to view the sum of the salaries for a given department
 function viewDeptBudget(){
-  connection.query("SELECT DISTINCT role.title, role.salary, role.department_id, department.department_name FROM role AS role JOIN department AS department ON role.department_id = department.id", function(err, res){
+  connection.query("SELECT DISTINCT role.department_id, department.department_name FROM role AS role JOIN department AS department ON role.department_id = department.id", function(err, res){
     if (err) throw err
     const department = res.map(object=> {
       return {
