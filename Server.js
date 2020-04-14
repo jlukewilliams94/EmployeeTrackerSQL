@@ -90,6 +90,13 @@ function addInfo(option) {
               value: object.id
           }
         })
+        connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function(error, result){
+          const manager = res.map(object => {
+            return {
+                name: `${object.first_name} ${object.last_name}`,
+                value: object.id
+            }
+          })
           inquirer
             .prompt([{
               name: "first_name",
@@ -109,25 +116,25 @@ function addInfo(option) {
             },
             {
               name: "manager",
-              type: "input",
+              type: "list",
               message: "Who is the employee's manager?",
-              default: "null"
+              choices: manager
             },
           ])
           .then(function(res){
-            connection.query("INSERT INTO employee SET ?", {
+            connection.query("INSERT INTO employee SET ?", [{
               first_name: res.first_name,
               last_name: res.last_name,
-              title: res.title, 
+              role_id: res.role, 
               manager_id: res.manager
-            }), 
+            }], 
             function (err){
               if (err) throw err
-              console.log("Employee as been added to system")
+              console.log(`${res.first_name} ${res.last_name} has been added to the system`)
               keepGoing()
-            }
+            })
           })
-        
+        })
       })
       break;
     case "Department":
@@ -149,7 +156,7 @@ function addInfo(option) {
             connection.query("INSERT INTO department SET ?",
             {department_name: a.department}, function(err){
               if (err) throw err
-              console.log("Department has been added to system")
+              console.log(`${a.department} has been added to the system`)
               keepGoing()
             })
           })
