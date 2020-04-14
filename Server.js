@@ -41,7 +41,6 @@ function runSearch() {
         "Add",
         "View",
         "Update",
-        "Delete"
       ]
     },
     {
@@ -67,10 +66,6 @@ function runSearch() {
 
       case "Update":
         updateInfo(answer.option)
-        break;
-
-      case "Delete":
-        deleteInfo(answer.option)
         break;
       }
     })
