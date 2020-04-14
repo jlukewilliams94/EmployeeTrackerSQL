@@ -149,7 +149,7 @@ function addInfo(option) {
             connection.query("INSERT INTO department SET ?",
             {department_name: a.department}, function(err){
               if (err) throw err
-              console.log("Department as been added to system")
+              console.log($(a.department) + "as been added to system")
               keepGoing()
             })
           })
@@ -210,7 +210,8 @@ function viewInfo(option) {
             message: "What would you like to view in Employee Table ?",
             choices: [
               "View the Employee Table", 
-              "View the Employees by Manager"
+              "View the Employees by Manager",
+              "View Department Budget"
             ]
           }
         ])
@@ -223,8 +224,10 @@ function viewInfo(option) {
               console.log("--------------------------------------------------")
               keepGoing()
             })
-          } else {
+          } else if (a.option === "View the Employees by Manager") {
             viewByManager()
+          } else {
+            viewDeptBudget()
           }
         })
       break;
@@ -278,6 +281,37 @@ function viewByManager(){
         })
       })
   })  
+}
+
+//Function to view the sum of the salaries for a given department
+function viewDeptBudget(){
+  connection.query("SELECT role.title, role.salary, role.department_id, department.department_name FROM role AS role JOIN department AS department ON role.department_id = department.id", function(err, res){
+    if (err) throw err
+    const department = res.map(object=> {
+      return {
+        name : object.department_name,
+        value: object.department_id
+      }
+    })
+    inquirer
+      .prompt([
+        {
+          name: "budget", 
+          type: "list",
+          message: "Which departments budget would you like to view",
+          choices: department
+        }
+      ])
+      .then(function (a){
+        connection.query("SELECT DISTINCT department.department_name, sum(role.salary) AS Allocated_Budget FROM role AS role JOIN department AS department ON role.department_id = department.id WHERE role.department_id = ?", [a.budget], function(err, res){
+          if (err) throw err;
+          console.log("--------------------------------------------------")
+          console.table(res)
+          console.log("--------------------------------------------------")
+          keepGoing()
+        })
+      })
+  })
 }
 
 //updateInfo to allow the user to update employee table. Department and Role tables do not have this capability at this time. 
