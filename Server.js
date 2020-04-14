@@ -354,6 +354,7 @@ function updateInfo(option) {
   }
 }
 
+//Function changeRole updates a employees role to a desired position
 function changeRole (){
   connection.query("SELECT * FROM role", function(err, res){
     if (err) throw err;
@@ -452,9 +453,6 @@ function changeManager(){
     })
   })
 }
-
-
-
 
 
 // Function to prompt the user whethere they want to end node session with "Exit" or "Continue" with mode session.
