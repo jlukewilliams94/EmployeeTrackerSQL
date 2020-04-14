@@ -468,7 +468,7 @@ function keepGoing() {
           name: "action",
           type: "list",
           message: "Would you like to continue to exit?",
-          choices: ["CONTINUE", "EXIT", "View EMS Table"]
+          choices: ["CONTINUE", "View EMS Table", "EXIT"]
       })
       .then(function (res) {
           switch (res.action) {
