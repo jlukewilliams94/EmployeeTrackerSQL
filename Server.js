@@ -149,7 +149,7 @@ function addInfo(option) {
             connection.query("INSERT INTO department SET ?",
             {department_name: a.department}, function(err){
               if (err) throw err
-              console.log($(a.department) + "as been added to system")
+              console.log("Department has been added to system")
               keepGoing()
             })
           })
