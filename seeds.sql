@@ -3,6 +3,7 @@ DROP DATABASE IF EXISTS employee_management_db;
 -- Creates the "employee_management_db" database --
 CREATE DATABASE employee_management_db;
 
+-- Ensures which schema/database is used for the following SQL queries. 
 USE employee_management_db;
 
 -- Creates table for department 
@@ -31,6 +32,7 @@ CREATE TABLE employee (
     PRIMARY KEY (id)
 )
 
+-- Example INPUT into department table
 INSERT INTO department (department_name)
 VALUES ("Sales");
 
@@ -43,6 +45,7 @@ VALUES ("Finance");
 INSERT INTO department (department_name)
 VALUES ("Legal");
 
+-- Example INPUT into role table
 
 INSERT INTO role (title, salary, department_id)
 VALUES ("Customer Service Representitve", 40000 , 1);
@@ -65,6 +68,7 @@ VALUES ("Book Keeper", 35000, 3);
 INSERT INTO role (title, salary, department_id)
 VALUES ("House Council", 120000, 4);
 
+-- Example INPUT into employee table
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Chris", "Glennon", 1, 2);
