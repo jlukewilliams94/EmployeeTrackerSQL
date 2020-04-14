@@ -92,7 +92,8 @@ function addInfo(option) {
           }
         })
         connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function(error, result){
-          const manager = res.map(object => {
+          if (error) throw error
+          const manager = result.map(object => {
             return {
                 name: `${object.first_name} ${object.last_name}`,
                 value: object.id
@@ -467,7 +468,7 @@ function keepGoing() {
           name: "action",
           type: "list",
           message: "Would you like to continue to exit?",
-          choices: ["CONTINUE", "EXIT"]
+          choices: ["CONTINUE", "EXIT", "View EMS Table"]
       })
       .then(function (res) {
           switch (res.action) {
@@ -477,6 +478,14 @@ function keepGoing() {
               case "CONTINUE":
                   runSearch();
                   break;
+              case "View EMS Table":
+                connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, department.department_name,  employee.manager_id FROM employee AS employee JOIN role AS role ON employee.role_id = role.id JOIN department AS department ON role.department_id = department.id", function(err, result){
+                console.log("WELCOME TO THE EMPLOYEE MANAGEMENT SYSTEM")
+                console.log("--------------------------------------------------")
+                console.table(result)
+                console.log("--------------------------------------------------") 
+                keepGoing()
+                })
           }
       })
       .catch(function (err) {
