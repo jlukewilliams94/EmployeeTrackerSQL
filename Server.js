@@ -9,7 +9,7 @@ let connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "",
+    password: "Mustangs!11",
     database: "employee_management_db"
 });
   
@@ -187,11 +187,12 @@ function addInfo(option) {
         ])
         .then(function (b){
           connection.query("INSERT INTO role SET ?", 
-          { title: b.department,
+          { title: b.role,
             salary: b.salary, 
             department_id: b.department_id
           }
           ,function (err){
+            if (err) throw err
             console.log(`${b.role} has been added to the system`)
             console.log("--------------------------------------------------")
             keepGoing()
