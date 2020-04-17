@@ -1,5 +1,8 @@
 # Employee Management System with Node.js and MySQL 
 ## Project Description
+
+![Screen Shot 2020-04-17 at 12 27 50 PM](https://user-images.githubusercontent.com/59854275/79591798-092c1880-80a7-11ea-8dc4-f9aa7dbf2df6.png)
+
 ### Why did I build this project?
 * The purpose of this project was to create a SQL  database to store information about a companys departments, roles and employees. The Employee Management Syste alows users to update, add and view information in any of the tables (Department Table, Role Table, Employee Table).  
 ### What problems does this project overcome?
@@ -31,3 +34,6 @@ None
 ![profile image](https://avatars1.githubusercontent.com/u/59854275?v=4)
 ### What is my email address?
 luke.williams@vigilmobile.com
+
+
+
