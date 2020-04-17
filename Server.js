@@ -216,8 +216,7 @@ function viewInfo(option) {
             message: "What would you like to view in Employee Table ?",
             choices: [
               "View the Employee Table", 
-              "View the Employees by Manager",
-              "View Department Budget"
+              "View the Employees by Manager"
             ]
           }
         ])
@@ -230,12 +229,10 @@ function viewInfo(option) {
               console.log("--------------------------------------------------")
               keepGoing()
             })
-          } else if (a.option === "View the Employees by Manager") {
+          } else (a.option === "View the Employees by Manager") 
             viewByManager()
-          } else {
-            viewDeptBudget()
-          }
-        })
+          } 
+        )
       break;
     case "Role":
       connection.query("SELECT * FROM role", function(err, res){
@@ -247,13 +244,31 @@ function viewInfo(option) {
       })
       break;
     case "Department":
-      connection.query("SELECT * FROM department", function(err, res){
-        if (err) throw err;
-        console.log("--------------------------------------------------")
-        console.table(res)
-        console.log("--------------------------------------------------")
-        keepGoing()
-      })
+        inquirer
+          .prompt([
+            {
+              name: "option",
+              type: "list",
+              message: "What would you like to view in Employee Table ?",
+              choices: [
+                "View the Department Table", 
+                "View each Departments Budget"
+              ]
+            }
+          ])
+          .then (function (a){
+            if (a.option === "View the Department Table"){
+            connection.query("SELECT * FROM department", function(err, res){
+              if (err) throw err;
+              console.log("--------------------------------------------------")
+              console.table(res)
+              console.log("--------------------------------------------------")
+              keepGoing()
+            })
+          } else {
+            viewDeptBudget()
+          }
+        })
       break;
   }
 }
